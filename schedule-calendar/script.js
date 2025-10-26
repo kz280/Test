@@ -28,8 +28,8 @@ function renderCalendar() {
     const lastDate = lastDay.getDate();
     const prevLastDate = prevLastDay.getDate();
     
-    const calendarDays = document.getElementById('calendarDays');
-    calendarDays.innerHTML = '';
+    const calendarGrid = document.querySelector('.calendar-grid');
+    calendarGrid.querySelectorAll('.calendar-day').forEach(el => el.remove());
     
     const today = new Date();
     const isCurrentMonth = today.getFullYear() === year && today.getMonth() === month;
@@ -39,7 +39,7 @@ function renderCalendar() {
         const day = document.createElement('div');
         day.className = 'calendar-day other-month';
         day.textContent = prevLastDate - i;
-        calendarDays.appendChild(day);
+        calendarGrid.appendChild(day);
     }
     
     for (let date = 1; date <= lastDate; date++) {
@@ -64,7 +64,7 @@ function renderCalendar() {
             document.getElementById('scheduleDate').value = dateString;
         });
         
-        calendarDays.appendChild(day);
+        calendarGrid.appendChild(day);
     }
     
     const totalCells = firstDayOfWeek + lastDate;
@@ -74,7 +74,7 @@ function renderCalendar() {
         const day = document.createElement('div');
         day.className = 'calendar-day other-month';
         day.textContent = date;
-        calendarDays.appendChild(day);
+        calendarGrid.appendChild(day);
     }
 }
 
