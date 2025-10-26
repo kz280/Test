@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>スケジュールカレンダー</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>スケジュールカレンダー</h1>
+        </header>
+        
+        <div class="calendar-controls">
+            <button id="prevMonth" class="btn">前月</button>
+            <h2 id="currentMonth"></h2>
+            <button id="nextMonth" class="btn">次月</button>
+        </div>
+        
+        <div class="calendar-grid">
+            <div class="calendar-header">日</div>
+            <div class="calendar-header">月</div>
+            <div class="calendar-header">火</div>
+            <div class="calendar-header">水</div>
+            <div class="calendar-header">木</div>
+            <div class="calendar-header">金</div>
+            <div class="calendar-header">土</div>
+            <div id="calendarDays"></div>
+        </div>
+        
+        <div class="schedule-section">
+            <h3>スケジュール追加</h3>
+            <form id="scheduleForm">
+                <div class="form-group">
+                    <label for="scheduleDate">日付:</label>
+                    <input type="date" id="scheduleDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="scheduleTime">時間:</label>
+                    <input type="time" id="scheduleTime" required>
+                </div>
+                <div class="form-group">
+                    <label for="scheduleTitle">タイトル:</label>
+                    <input type="text" id="scheduleTitle" required>
+                </div>
+                <div class="form-group">
+                    <label for="scheduleDescription">詳細:</label>
+                    <textarea id="scheduleDescription" rows="3"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">追加</button>
+            </form>
+        </div>
+        
+        <div class="schedule-list">
+            <h3>スケジュール一覧</h3>
+            <div id="scheduleItems"></div>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
