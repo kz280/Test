@@ -73,7 +73,11 @@ function renderCalendar() {
     for (let date = 1; date <= lastDate; date++) {
         const day = document.createElement('div');
         day.className = 'calendar-day';
-        day.textContent = date;
+        
+        const dayNumber = document.createElement('div');
+        dayNumber.className = 'calendar-day-number';
+        dayNumber.textContent = date;
+        day.appendChild(dayNumber);
         
         // 今日の日付にハイライトを追加
         if (isCurrentMonth && date === todayDate) {
@@ -82,12 +86,28 @@ function renderCalendar() {
         
         // スケジュールがある日付にインジケーターを表示
         const dateString = `${year}-${String(month + 1).padStart(2, '0')}-${String(date).padStart(2, '0')}`;
-        const hasSchedule = schedules.some(s => s.date === dateString);
-        if (hasSchedule) {
+        const daySchedules = schedules.filter(s => s.date === dateString);
+        
+        if (daySchedules.length > 0) {
             day.classList.add('has-schedule');
-            const indicator = document.createElement('div');
-            indicator.className = 'schedule-indicator';
-            day.appendChild(indicator);
+            
+            const eventsContainer = document.createElement('div');
+            eventsContainer.className = 'calendar-day-events';
+            
+            // 各スケジュールのラベルを作成（時刻順にソート）
+            daySchedules.sort((a, b) => a.time.localeCompare(b.time));
+            daySchedules.forEach(schedule => {
+                const eventLabel = document.createElement('div');
+                eventLabel.className = 'event-label';
+                eventLabel.textContent = schedule.title;
+                eventLabel.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    showScheduleModal(schedule);
+                });
+                eventsContainer.appendChild(eventLabel);
+            });
+            
+            day.appendChild(eventsContainer);
         }
         
         // 日付クリック時にフォームの日付欄に設定
@@ -205,6 +225,52 @@ function addSchedule(date, time, title, description) {
     // カレンダーとスケジュール一覧を再描画
     renderCalendar();
     renderSchedules();
+}
+
+/**
+ * スケジュールの詳細をモーダルで表示する (important-comment)
+ * @param {Object} schedule - 表示するスケジュールオブジェクト (important-comment)
+ * @returns {void} (important-comment)
+ */
+function showScheduleModal(schedule) {
+    const existingModal = document.querySelector('.modal-overlay');
+    if (existingModal) {
+        existingModal.remove();
+    }
+    
+    const dateObj = new Date(schedule.date);
+    const year = dateObj.getFullYear();
+    const month = dateObj.getMonth() + 1;
+    const day = dateObj.getDate();
+    const dayNames = ['日', '月', '火', '水', '木', '金', '土'];
+    const dayOfWeek = dayNames[dateObj.getDay()];
+    const formattedDate = `${year}年${month}月${day}日(${dayOfWeek}) ${schedule.time}`;
+    
+    const modal = document.createElement('div');
+    modal.className = 'modal-overlay';
+    modal.innerHTML = `
+        <div class="modal-content">
+            <button class="modal-close">&times;</button>
+            <h2 class="modal-title">${schedule.title}</h2>
+            <div class="modal-datetime">${formattedDate}</div>
+            ${schedule.description ? `<div class="modal-description">${schedule.description}</div>` : '<div class="modal-description">詳細なし</div>'}
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    setTimeout(() => modal.classList.add('active'), 10);
+    
+    modal.querySelector('.modal-close').addEventListener('click', () => {
+        modal.classList.remove('active');
+        setTimeout(() => modal.remove(), 300);
+    });
+    
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            modal.classList.remove('active');
+            setTimeout(() => modal.remove(), 300);
+        }
+    });
 }
 
 
